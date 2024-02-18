@@ -2,7 +2,7 @@ const connection = require("./database/connection")
 const express = require("express");
 const cors = require("cors");
 
-console.log("API Node para FriendNet");
+console.log("API Node para Circulus");
 
 connection();
 

@@ -1,0 +1,13 @@
+# Módulos de Node.js
+/node_modules
+
+# Dependencias específicas de un sistema
+/npm-debug.log
+/yarn-error.log
+
+# Carpeta de construcción
+/build
+
+# Archivos temporales
+.DS_Store
+.vscode

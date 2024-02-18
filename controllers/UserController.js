@@ -73,7 +73,6 @@ const login = async (req, res) => {
         }
 
         const user = await User.findOne({ email: params.email })
-        //.select({ "password": 0 })
         if (!user || user.length === 0) {
             return res.status(404).send({
                 status: "error",
