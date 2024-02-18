@@ -1,10 +1,10 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const jwt = require("../Services/jwt");
+const jwt = require("../services/jwt");
 const mongoosePaginate = require("mongoose-pagination");
 const fs = require("fs").promises;
 const path = require("path");
-const followService = require("../Services/followService");
+const followService = require("../services/followService");
 
 const prueba = (req, res) => {
     return res.status(200).json({

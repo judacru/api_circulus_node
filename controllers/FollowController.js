@@ -3,7 +3,7 @@ const User = require("../models/user");
 
 const mongoosePaginate = require("mongoose-pagination");
 
-const followService = require("../Services/followService");
+const followService = require("../services/followService");
 
 const prueba = (req, res) => {
     return res.status(200).send({

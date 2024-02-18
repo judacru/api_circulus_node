@@ -1,7 +1,7 @@
 const fs = require("fs").promises;
 const path = require("path");
 const Publication = require("../models/publication");
-const followService = require("../Services/followService");
+const followService = require("../services/followService");
 
 
 const save = async (req, res) => {
