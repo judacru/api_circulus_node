@@ -18,12 +18,12 @@ const save = async (req, res) => {
         let newPublication = new Publication(params);
         newPublication.user = req.user.id;
 
-        const publicationStore = await newPublication.save();
+        const publication = await newPublication.save();
 
         return res.status(200).send({
             status: "success",
             message: "Publicación guardada con éxito",
-            publicationStore
+            publication
         });
     } catch (error) {
         return res.status(400).send({
@@ -154,6 +154,7 @@ const upload = async (req, res) => {
 
         publicationUpdated = await Publication.findOneAndUpdate({ "user": req.user.id, "_id": publicationId }, { file: req.file.filename }, { new: true })
 
+        console.log("Publicacion actualizada: ", publicationUpdated)
         return res.status(200).send({
             status: "success",
             user: publicationUpdated,

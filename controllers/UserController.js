@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const Follow = require("../models/follow");
+const Publication = require("../models/publication");
 const jwt = require("../services/jwt");
 const mongoosePaginate = require("mongoose-pagination");
 const fs = require("fs").promises;
@@ -20,6 +22,9 @@ const create = async (req, res) => {
 
         if (!params.name || !params.nick || !params.email || !params.password) {
             console.log("Validacion incorrecta");
+
+            //throw new Error("Faltan datos por enviar");
+
             return res.status(400).json({
                 status: "error",
                 message: "Faltan datos por enviar"
@@ -35,7 +40,7 @@ const create = async (req, res) => {
 
         if (users && users.length >= 1) {
             return res.status(200).json({
-                status: "success",
+                status: "error",
                 message: "El usuario ya existe",
             });
         }
@@ -58,6 +63,8 @@ const create = async (req, res) => {
             message: "Ocurrió un error",
             error: error.message
         });
+
+        //next(error)
     }
 }
 
@@ -151,7 +158,7 @@ const list = async (req, res) => {
             page = parseInt(req.params.page);
         }
 
-        let itemsPerPage = 5;
+        let itemsPerPage = 2;
 
         const users = await User.find()
             .sort('_id')
@@ -221,6 +228,8 @@ const update = async (req, res) => {
         if (userToUpdate.password) {
             const pwd = await bcrypt.hash(userToUpdate.password, 10);
             userToUpdate.password = pwd;
+        } else {
+            delete userToUpdate.password;
         }
 
         userToUpdate = await User.findByIdAndUpdate({_id: userIdentity.id}, userToUpdate, { new: true })
@@ -301,6 +310,37 @@ const avatar = async (req, res) => {
             error
         });
     }
+    
+};
+
+const counters = async (req, res) => {
+
+    let userId = req.user.id;
+
+    if (req.params.id) {
+        userId = req.params.id;
+    }
+
+    try {
+        const following = await Follow.countDocuments({ "user": userId });
+
+        const followed = await Follow.countDocuments({ "followed": userId });
+
+        const publications = await Publication.countDocuments({ "user": userId });
+
+        return res.status(200).send({
+            userId,
+            following: following,
+            followed: followed,
+            publications: publications
+        });
+    } catch (error) {
+        return res.status(500).send({
+            status: "error",
+            message: "Error en los contadores",
+            error: error.message
+        });
+    }
 };
 
 
@@ -312,5 +352,6 @@ module.exports = {
     list,
     update,
     upload,
-    avatar
+    avatar,
+    counters
 }

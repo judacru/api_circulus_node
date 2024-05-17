@@ -11,3 +11,6 @@
 # Archivos temporales
 .DS_Store
 .vscode
+
+.env
+/uploads
