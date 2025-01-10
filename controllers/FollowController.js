@@ -1,15 +1,5 @@
 const Follow = require("../models/follow");
-const User = require("../models/user");
-
-const mongoosePaginate = require("mongoose-pagination");
-
 const followService = require("../services/followService");
-
-const prueba = (req, res) => {
-    return res.status(200).send({
-        message: "Mensaje enviado desde el controlador de usuarios"
-    });
-}
 
 const save = async (req, res) => {
     try {
@@ -129,8 +119,6 @@ const followers = async (req, res) => {
 
         const itemsPerPage = 2;
 
-        console.log(idUser)
-
         const follows = await Follow.find({ "followed": idUser })
             .populate("user", "-password -role -__v")
             .paginate(page, itemsPerPage)
@@ -160,7 +148,6 @@ const followers = async (req, res) => {
 
 
 module.exports = {
-    prueba,
     save,
     unfollow,
     following,
