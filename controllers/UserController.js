@@ -8,23 +8,11 @@ const fs = require("fs").promises;
 const path = require("path");
 const followService = require("../services/followService");
 
-const prueba = (req, res) => {
-    return res.status(200).json({
-        status: "success",
-        message: "Hola",
-        usuario: req.user
-    });
-}
-
 const create = async (req, res) => {
     try {
         let params = req.body;
 
         if (!params.name || !params.nick || !params.email || !params.password) {
-            console.log("Validacion incorrecta");
-
-            //throw new Error("Faltan datos por enviar");
-
             return res.status(400).json({
                 status: "error",
                 message: "Faltan datos por enviar"
@@ -158,7 +146,7 @@ const list = async (req, res) => {
             page = parseInt(req.params.page);
         }
 
-        let itemsPerPage = 2;
+        let itemsPerPage = 5;
 
         const users = await User.find()
             .sort('_id')
@@ -347,7 +335,6 @@ const counters = async (req, res) => {
 module.exports = {
     create,
     login,
-    prueba,
     profile,
     list,
     update,

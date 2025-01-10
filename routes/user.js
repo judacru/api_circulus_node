@@ -19,7 +19,6 @@ const uploads = multer({storage});
 router.post("/create", UserController.create);
 router.post("/login", UserController.login);
 router.post("/upload", [check.auth, uploads.single("file0")], UserController.upload);
-router.get("/prueba", check.auth, UserController.prueba);
 router.get("/profile/:id", check.auth, UserController.profile);
 router.get("/list/:page?", check.auth, UserController.list);
 router.get("/avatar/:file", UserController.avatar);

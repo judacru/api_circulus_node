@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const config = require("../config/index");
 
-const dbUrl = "mongodb://127.0.0.1:" + config.DB_PORT + "/" + config.DB_NAME;
+const dbUrl = "mongodb://" + config.DB_SERVER + ":" + config.DB_PORT + "/" + config.DB_NAME;
+
 const connection = async() => {
     try {
 

@@ -91,9 +91,15 @@ const user = async (req, res) => {
 
         let page = 1;
 
-        if (req.params.page) page = parseInt(req.params.page);
+        if (req.params.page) {
+            page = parseInt(req.params.page);
 
-        const itemsPerPage = 2;
+            if (isNaN(page) || page <= 0) {
+                page = 1;
+            }
+        }
+
+        const itemsPerPage = 5;
 
         const publications = await Publication.find({ "user": userId })
             .sort("-created_at")
@@ -128,7 +134,7 @@ const user = async (req, res) => {
 
 const upload = async (req, res) => {
     try {
-        const publicationId = req.params.id; 
+        const publicationId = req.params.id;
 
         if (!req.file) {
             return res.status(400).send({
@@ -142,7 +148,7 @@ const upload = async (req, res) => {
         let imageSplit = image.split("\.")
         let extension = imageSplit[1];
 
-        if (extension != "png" && extension != "jpg" && extension != "jpge" && extension != "gif") {
+        if (extension != "png" && extension != "jpg" && extension != "jpeg" && extension != "gif") {
             const filePath = req.file.path;
             fs.unlinkSync(filePath);
 
@@ -154,7 +160,6 @@ const upload = async (req, res) => {
 
         publicationUpdated = await Publication.findOneAndUpdate({ "user": req.user.id, "_id": publicationId }, { file: req.file.filename }, { new: true })
 
-        console.log("Publicacion actualizada: ", publicationUpdated)
         return res.status(200).send({
             status: "success",
             user: publicationUpdated,
@@ -172,7 +177,7 @@ const upload = async (req, res) => {
 const media = async (req, res) => {
     try {
         const file = req.params.file;
-        const filePath = "./uploads/publications/"+file;
+        const filePath = "./uploads/publications/" + file;
 
         try {
             await fs.access(filePath);
@@ -197,23 +202,27 @@ const feed = async (req, res) => {
 
     let page = 1;
 
-    if(req.params.page) page = req.params.page;
+    if (req.params.page) page = req.params.page;
 
     let itemsPerPage = 5
 
-    try{
+    try {
         const myFollows = await followService.followUserIds(req.user.id);
 
         const publications = await Publication.find({
             user: myFollows.following
         })
+            .sort("-created_at")
+            .populate("user", "-password -role -__v")
+            .paginate(page, itemsPerPage)
+        
         return res.status(200).send({
             status: "success",
             message: "Feed de publicaciones",
             following: myFollows.following,
             publications
         })
-    }catch (error) {
+    } catch (error) {
         return res.status(500).json({
             status: "error",
             message: "No se han listado las publicaciones del feed",
